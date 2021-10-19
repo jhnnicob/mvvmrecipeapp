@@ -1,9 +1,8 @@
 package com.nico.mvvmrecipe.network.model
 
-import android.icu.text.CaseMap
 import com.google.gson.annotations.SerializedName
 
-data class RecipeNetworkEntity(
+data class RecipeDto(
 
     @SerializedName("pk")
     val pk: Int? = null,
@@ -14,8 +13,8 @@ data class RecipeNetworkEntity(
     @SerializedName("publisher")
     val publisher: String? = null,
 
-    @SerializedName("feature_image")
-    val featureImage: String? = null,
+    @SerializedName("featured_image")
+    val featuredImage: String? = null,
 
     @SerializedName("rating")
     val rating: Int? = null,
