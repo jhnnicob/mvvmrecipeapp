@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
@@ -25,6 +25,7 @@ import androidx.fragment.app.viewModels
 import com.nico.mvvmrecipe.presentation.components.FoodCategoryChips
 import com.nico.mvvmrecipe.presentation.components.RecipeCard
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipeListFragment: Fragment() {
@@ -45,6 +46,8 @@ class RecipeListFragment: Fragment() {
                 val query = viewModel.query.value
 
                 val keyboardController = LocalFocusManager.current
+
+                val selectedCategory = viewModel.selectedCategory.value
 
                 Column {
 
@@ -80,7 +83,7 @@ class RecipeListFragment: Fragment() {
                                     },
                                     keyboardActions = KeyboardActions(
                                         onSearch = {
-                                            viewModel.newSearch(query)
+                                            viewModel.newSearch()
                                             keyboardController.clearFocus()
                                         }
                                     ),
@@ -91,16 +94,33 @@ class RecipeListFragment: Fragment() {
                                 )
                             }
 
-                                ScrollableTabRow(selectedTabIndex = 0, modifier = Modifier.fillMaxWidth()) {
-                                    for (category in getAllFoodCategories()) {
+                                val lazyListState = rememberLazyListState()
+                                val coroutineScope = rememberCoroutineScope()
+                                val categories = getAllFoodCategories()
+
+                                LazyRow(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(start = 8.dp, bottom = 8.dp),
+                                    state = lazyListState
+                                ) {
+
+                                    coroutineScope.launch {
+                                        lazyListState.scrollToItem(viewModel.categoryScrollPosition)
+                                    }
+
+                                    items(items = categories, itemContent = { category ->
                                         FoodCategoryChips(
                                             category = category.value,
-                                            onExecuteSearch = {
-                                                viewModel.onQueryChanged(it)
-                                                viewModel.newSearch(it)
-                                            }
+                                            isSelected = selectedCategory == category,
+                                            onSelectedCategoryChanged = {
+                                                viewModel.onSelectedCategoryChanged(it)
+                                                viewModel.onChangeCategoryChangePosition(lazyListState.firstVisibleItemScrollOffset)
+                                            },
+                                            onExecuteSearch = viewModel::newSearch
                                         )
-                                    }
+                                    })
+
                                 }
 
                         }
