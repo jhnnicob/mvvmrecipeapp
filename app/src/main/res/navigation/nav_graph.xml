@@ -5,7 +5,7 @@
     app:startDestination="@id/recipeListFragment">
     <fragment
         android:id="@+id/recipeListFragment"
-        android:name="com.nico.mvvmrecipe.RecipeListFragment"
+        android:name="com.nico.mvvmrecipe.presentation.ui.recipe_list.RecipeListFragment"
         android:label="RecipeListFragment" >
         <action
             android:id="@+id/goToRecipe"
@@ -13,6 +13,6 @@
     </fragment>
     <fragment
         android:id="@+id/recipeFragment"
-        android:name="com.nico.mvvmrecipe.RecipeFragment"
+        android:name="com.nico.mvvmrecipe.presentation.ui.recipe.RecipeFragment"
         android:label="RecipeFragment" />
 </navigation>
