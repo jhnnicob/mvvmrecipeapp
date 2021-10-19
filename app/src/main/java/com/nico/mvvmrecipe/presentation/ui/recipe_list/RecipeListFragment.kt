@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.nico.mvvmrecipe.presentation.components.CircularProgressBar
 import com.nico.mvvmrecipe.presentation.components.FoodCategoryChips
 import com.nico.mvvmrecipe.presentation.components.RecipeCard
 import com.nico.mvvmrecipe.presentation.components.SearchAppBar
@@ -45,6 +46,7 @@ class RecipeListFragment: Fragment() {
                 val recipes = viewModel.recipes.value
                 val query = viewModel.query.value
                 val selectedCategory = viewModel.selectedCategory.value
+                val loading = viewModel.loading.value
 
                 Column {
 
@@ -58,12 +60,18 @@ class RecipeListFragment: Fragment() {
                         onChangeCategoryScrollPosition = viewModel::onChangeCategoryScrollPosition
                     )
 
-                    LazyColumn{
-                        itemsIndexed(
-                            items = recipes
-                        ) { index, recipe ->
-                            RecipeCard(recipe = recipe, onClick = {})
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        LazyColumn{
+                            itemsIndexed(
+                                items = recipes
+                            ) { index, recipe ->
+                                RecipeCard(recipe = recipe, onClick = {})
+                            }
                         }
+
+                        CircularProgressBar(isDisplayed = loading)
                     }
 
                 }
