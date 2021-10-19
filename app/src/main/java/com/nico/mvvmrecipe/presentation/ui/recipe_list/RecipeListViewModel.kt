@@ -2,6 +2,7 @@ package com.nico.mvvmrecipe.presentation.ui.recipe_list
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nico.mvvmrecipe.domain.model.Recipe
@@ -30,19 +31,34 @@ class RecipeListViewModel @Inject constructor(
 
     var categoryScrollPosition: Int = 0
 
+    var loading = mutableStateOf(false)
+
     init {
         newSearch()
     }
 
     fun newSearch() {
         viewModelScope.launch {
+            loading.value = true
+            resetSearchState()
             val result = repository.search(
                 token = token,
                 page = 1,
                 query = query.value
             )
             recipes.value = result
+            loading.value = false
         }
+    }
+
+    private fun resetSearchState()
+    {
+        recipes.value = listOf()
+        if(selectedCategory.value?.value != query.value)
+            clearSelectedCategory()
+    }
+    private fun clearSelectedCategory() {
+        selectedCategory.value = null
     }
 
     fun onQueryChanged(query: String) {
