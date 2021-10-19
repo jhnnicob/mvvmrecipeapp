@@ -55,7 +55,7 @@ class RecipeListViewModel @Inject constructor(
         onQueryChanged(category)
     }
 
-    fun onChangeCategoryChangePosition(position: Int) {
+    fun onChangeCategoryScrollPosition(position: Int) {
         categoryScrollPosition = position
     }
 }
